@@ -1,4 +1,5 @@
 using AspNetCoreUseQuartzNet.Jobs;
+using CrystalQuartz.Core.Domain.Activities;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using Quartz.Util;
@@ -27,13 +28,13 @@ namespace AspNetCoreUseQuartzNet.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get([FromQuery] string name)
         {
-            // 指定时间执行第一次，然后每隔3分钟执行一次
+            // 指定时间执行第一次，然后每隔1分钟执行一次
 
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
                         .StartAt(DateTime.Now.AddSeconds(-10))
-                        .WithSimpleSchedule(x => x.WithIntervalInMinutes(3).RepeatForever())
+                        .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
                         .Build();
             //*/
 
@@ -141,7 +142,9 @@ namespace AspNetCoreUseQuartzNet.Controllers
         {
             var scheduler = await _schedulerFactory.GetScheduler();
 
-            await scheduler.TriggerJob(HelloJob.Key);
+            var data = new JobDataMap();
+            data.PutAll(new Dictionary<string, object> { { "name", "bi" } });
+            await scheduler.TriggerJob(HelloJob.Key, data);
         }
     }
 }
