@@ -4,6 +4,15 @@ namespace AspNetCoreUseQuartzNet.Jobs
 {
     public class HelloJob : IJob
     {
+        private readonly ILogger<HelloJob> _logger;
+        private readonly ISchedulerFactory _schedulerFactory;
+
+        public HelloJob(ILogger<HelloJob> logger, ISchedulerFactory schedulerFactory)
+        {
+            _logger = logger;
+            _schedulerFactory = schedulerFactory;
+        }
+
         /// <summary>
         /// https://www.quartz-scheduler.net/documentation/best-practices.html#static-job-key
         /// </summary>
@@ -15,7 +24,20 @@ namespace AspNetCoreUseQuartzNet.Jobs
             // https://www.quartz-scheduler.net/documentation/best-practices.html#use-the-merged-jobdatamap
             context.MergedJobDataMap.TryGetString("name", out string name);
 
-            await Console.Out.WriteLineAsync($"{DateTime.Now} ： hello {name}");
+            _logger.LogInformation($"{DateTime.Now} ： hello {name}");
+            // 业务逻辑处理
+
+
+
+            // 后续Trigger
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(ContinueJob.Key)
+                        .UsingJobData("name", name)
+                        .StartAt(DateTime.Now.AddSeconds(3))
+                        .Build();
+
+            var scheduler = await _schedulerFactory.GetScheduler();
+            await scheduler.ScheduleJob(trigger);
         }
     }
 }

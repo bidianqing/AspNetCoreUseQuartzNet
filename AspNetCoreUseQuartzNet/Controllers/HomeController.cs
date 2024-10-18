@@ -25,16 +25,69 @@ namespace AspNetCoreUseQuartzNet.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get([FromQuery] string name)
         {
+            // 指定时间执行第一次，然后每隔3分钟执行一次
+
             ITrigger trigger = TriggerBuilder.Create()
-                        .StartNow()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
-                        .WithSimpleSchedule(x => x
-                            .WithIntervalInSeconds(10) //每隔10秒执行一次
-                            .RepeatForever())
+                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .WithSimpleSchedule(x => x.WithIntervalInMinutes(3).RepeatForever())
                         .Build();
+            //*/
+
+
+            // 指定时间执行第一次，然后每隔2小时执行一次
+            /*
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(HelloJob.Key)
+                        .UsingJobData("name", name)
+                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .WithSimpleSchedule(x => x.WithIntervalInHours(2).RepeatForever())
+                        .Build();
+            //*/
+
+
+            // 指定时间执行第一次，然后每隔2天执行一次
+            /*
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(HelloJob.Key)
+                        .UsingJobData("name", name)
+                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .WithCalendarIntervalSchedule(x => x.WithIntervalInDays(2))
+                        .Build();
+            //*/
+
+
+            // 指定时间执行第一次，然后每隔2周执行一次
+            /*
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(HelloJob.Key)
+                        .UsingJobData("name", name)
+                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .WithCalendarIntervalSchedule(x => x.WithIntervalInWeeks(2))
+                        .Build();
+            //*/
+
+
+            // 指定时间执行第一次，然后每隔2月执行一次
+            /*
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(HelloJob.Key)
+                        .UsingJobData("name", name)
+                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .WithCalendarIntervalSchedule(x => x.WithIntervalInMonths(2))
+                        .Build();
+            //*/
+
             var scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.ScheduleJob(trigger);
+
+            // 立即执行一个Job
+            //await scheduler.TriggerJob(HelloJob.Key);
+
+            // 停止调度某个触发器
+            //await scheduler.UnscheduleJob(trigger.Key);
+
 
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

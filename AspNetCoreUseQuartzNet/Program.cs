@@ -1,4 +1,5 @@
 using AspNetCoreUseQuartzNet.Jobs;
+using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using Quartz;
 using Quartz.AspNetCore;
@@ -16,8 +17,14 @@ builder.Services.AddQuartz(options =>
 {
     options.AddJob<HelloJob>(c =>
     {
-        c.WithDescription("Hello");
+        c.WithDescription("HelloJob");
         c.WithIdentity(HelloJob.Key);
+        c.StoreDurably();
+    });
+    options.AddJob<ContinueJob>(c =>
+    {
+        c.WithDescription("ContinueJob");
+        c.WithIdentity(ContinueJob.Key);
         c.StoreDurably();
     });
     options.UsePersistentStore(s =>
@@ -36,7 +43,7 @@ builder.Services.AddQuartzServer();
 var app = builder.Build();
 
 var scheduler = await app.Services.GetRequiredService<ISchedulerFactory>().GetScheduler();
-app.UseCrystalQuartz(() => scheduler);
+app.UseCrystalQuartz(() => scheduler, new CrystalQuartzOptions { });
 
 // Configure the HTTP request pipeline.
 
