@@ -1,8 +1,10 @@
+using AspNetCoreUseQuartzNet;
 using AspNetCoreUseQuartzNet.Jobs;
 using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using Quartz;
 using Quartz.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +43,8 @@ builder.Services.AddQuartz(options =>
 builder.Services.AddQuartzServer();
 
 var app = builder.Build();
+
+app.UseQuartzUIAuthentication();
 
 var scheduler = await app.Services.GetRequiredService<ISchedulerFactory>().GetScheduler();
 app.UseCrystalQuartz(() => scheduler, new CrystalQuartzOptions { });

@@ -1,6 +1,8 @@
 using AspNetCoreUseQuartzNet.Jobs;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
+using Quartz.Util;
+using System.Collections.ObjectModel;
 
 namespace AspNetCoreUseQuartzNet.Controllers
 {
