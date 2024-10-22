@@ -33,7 +33,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
-                        .StartAt(DateTime.Now.AddSeconds(-10))
+                        .StartAt(DateTime.Now.AddSeconds(10))
                         .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
                         .Build();
             //*/
