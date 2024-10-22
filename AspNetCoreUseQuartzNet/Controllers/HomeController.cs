@@ -2,6 +2,7 @@ using AspNetCoreUseQuartzNet.Jobs;
 using CrystalQuartz.Core.Domain.Activities;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
+using Quartz.Simpl;
 using Quartz.Util;
 using System.Collections.ObjectModel;
 
@@ -33,7 +34,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
-                        .StartAt(DateTime.Now.AddSeconds(10))
+                        .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(10)))
                         .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
                         .Build();
             //*/
@@ -145,6 +146,22 @@ namespace AspNetCoreUseQuartzNet.Controllers
             var data = new JobDataMap();
             data.PutAll(new Dictionary<string, object> { { "name", "bi" } });
             await scheduler.TriggerJob(HelloJob.Key, data);
+        }
+
+        /// <summary>
+        /// 获取触发器的下次执行时间
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetNextFireTimeUtc")]
+        public async Task<DateTimeOffset?> GetNextFireTimeUtc()
+        {
+            var scheduler = await _schedulerFactory.GetScheduler();
+            ITrigger trigger = await scheduler.GetTrigger(new TriggerKey("facda4bf-302c-44e3-9c6c-c761abd2c7ac"));
+            
+
+            var nextTime = trigger.GetNextFireTimeUtc();
+
+            return nextTime;
         }
     }
 }
