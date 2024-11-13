@@ -5,12 +5,10 @@ namespace AspNetCoreUseQuartzNet.Jobs
     public class HelloJob : IJob
     {
         private readonly ILogger<HelloJob> _logger;
-        private readonly ISchedulerFactory _schedulerFactory;
 
         public HelloJob(ILogger<HelloJob> logger, ISchedulerFactory schedulerFactory)
         {
             _logger = logger;
-            _schedulerFactory = schedulerFactory;
         }
 
         /// <summary>
@@ -36,8 +34,7 @@ namespace AspNetCoreUseQuartzNet.Jobs
                         .StartAt(DateTime.Now.AddSeconds(3))
                         .Build();
 
-            var scheduler = await _schedulerFactory.GetScheduler();
-            await scheduler.ScheduleJob(trigger);
+            await context.Scheduler.ScheduleJob(trigger);
         }
     }
 }

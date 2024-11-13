@@ -34,8 +34,9 @@ namespace AspNetCoreUseQuartzNet.Controllers
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
-                        .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(10)))
-                        .WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
+                        .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
+                        .WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
+                        //.WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
                         .Build();
             //*/
 
@@ -157,7 +158,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         {
             var scheduler = await _schedulerFactory.GetScheduler();
             ITrigger trigger = await scheduler.GetTrigger(new TriggerKey("facda4bf-302c-44e3-9c6c-c761abd2c7ac"));
-            
+
 
             var nextTime = trigger.GetNextFireTimeUtc();
 
