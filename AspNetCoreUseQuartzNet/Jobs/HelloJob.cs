@@ -24,17 +24,6 @@ namespace AspNetCoreUseQuartzNet.Jobs
 
             _logger.LogInformation($"{DateTime.Now} ： hello {name}");
             // 业务逻辑处理
-
-
-
-            // 后续Trigger
-            ITrigger trigger = TriggerBuilder.Create()
-                        .ForJob(ContinueJob.Key)
-                        .UsingJobData("name", name)
-                        .StartAt(DateTime.Now.AddSeconds(3))
-                        .Build();
-
-            await context.Scheduler.ScheduleJob(trigger);
         }
     }
 }
