@@ -2,6 +2,7 @@ using AspNetCoreUseQuartzNet.Jobs;
 using CrystalQuartz.Core.Domain.Activities;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
+using Quartz.Impl.Matchers;
 using Quartz.Simpl;
 using Quartz.Util;
 using System.Collections.ObjectModel;
@@ -133,6 +134,39 @@ namespace AspNetCoreUseQuartzNet.Controllers
             var scheduler = await _schedulerFactory.GetScheduler();
 
             await scheduler.UnscheduleJob(new TriggerKey(name));
+        }
+
+        /// <summary>
+        /// 获取所有触发器
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("AllTrigger")]
+        public async Task<List<TriggerKey>> AllTrigger()
+        {
+            var scheduler = await _schedulerFactory.GetScheduler();
+
+            var triggers = await scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.AnyGroup());
+
+            return triggers.ToList();
+        }
+
+        /// <summary>
+        /// 删除所有触发器
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("DeleteAllTrigger")]
+        public async Task<string> DeleteAllTrigger()
+        {
+            var scheduler = await _schedulerFactory.GetScheduler();
+
+            var triggers = await scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.AnyGroup());
+
+            foreach (var trigger in triggers)
+            {
+                await scheduler.UnscheduleJob(new TriggerKey(trigger.Name, trigger.Group));
+            }
+
+            return "操作成功";
         }
 
         /// <summary>
