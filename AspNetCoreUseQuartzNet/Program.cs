@@ -4,6 +4,9 @@ using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using Quartz;
 using Quartz.AspNetCore;
+using System;
+using System.ComponentModel;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,18 +20,30 @@ builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quar
 
 builder.Services.AddQuartz(options =>
 {
-    options.AddJob<HelloJob>(c =>
+    var assembly = Assembly.Load("AspNetCoreUseQuartzNet");
+    List<TypeInfo> jobTypes = assembly.DefinedTypes.Where(u => u.IsClass && u.ImplementedInterfaces.Contains(typeof(IJob))).ToList();
+
+    foreach (var jobType in jobTypes)
     {
-        c.WithDescription("HelloJob");
-        c.WithIdentity(HelloJob.Key);
-        c.StoreDurably();
-    });
-    options.AddJob<ContinueJob>(c =>
-    {
-        c.WithDescription("ContinueJob");
-        c.WithIdentity(ContinueJob.Key);
-        c.StoreDurably();
-    });
+        string description = string.Empty;
+    
+        var descriptionAttribute = jobType.GetCustomAttribute<DescriptionAttribute>();
+        if (descriptionAttribute != null)
+        {
+            description = descriptionAttribute.Description;
+        }
+
+        var jobKeyInstance = jobType.GetField("Key", BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static);
+        var jobKey = jobKeyInstance.GetValue(jobType) as JobKey;
+
+        options.AddJob(jobType, null, c =>
+        {
+            c.WithDescription(description);
+            c.WithIdentity(jobKey);
+            c.StoreDurably();
+        });
+    }
+
     options.UsePersistentStore(s =>
     {
         s.UseProperties = true;

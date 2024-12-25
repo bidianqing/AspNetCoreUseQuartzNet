@@ -1,7 +1,9 @@
 ﻿using Quartz;
+using System.ComponentModel;
 
 namespace AspNetCoreUseQuartzNet.Jobs
 {
+    [Description("HelloJob")]
     public class HelloJob : IJob
     {
         private readonly ILogger<HelloJob> _logger;
