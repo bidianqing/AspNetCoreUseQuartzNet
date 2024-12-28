@@ -26,6 +26,8 @@ namespace AspNetCoreUseQuartzNet.Jobs
 
             _logger.LogInformation($"{DateTime.Now} ： hello {name}");
             // 业务逻辑处理
+
+            await Task.CompletedTask;
         }
     }
 }
