@@ -64,10 +64,6 @@ app.UseQuartzUIAuthentication();
 var scheduler = await app.Services.GetRequiredService<ISchedulerFactory>().GetScheduler();
 app.UseCrystalQuartz(() => scheduler, new CrystalQuartzOptions { });
 
-// Configure the HTTP request pipeline.
-
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
