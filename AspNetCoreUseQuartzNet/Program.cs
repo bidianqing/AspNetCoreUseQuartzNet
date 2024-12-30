@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using Quartz.Net.Dashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
