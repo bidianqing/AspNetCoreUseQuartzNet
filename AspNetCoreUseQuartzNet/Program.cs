@@ -64,6 +64,7 @@ app.UseQuartzUIAuthentication();
 
 var scheduler = await app.Services.GetRequiredService<ISchedulerFactory>().GetScheduler();
 app.UseCrystalQuartz(() => scheduler, new CrystalQuartzOptions { });
+app.UseQuartzDashboard(app.Services.GetRequiredService<ISchedulerFactory>());
 
 app.MapControllers();
 

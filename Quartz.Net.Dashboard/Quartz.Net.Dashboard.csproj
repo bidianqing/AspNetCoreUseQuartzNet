@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Pages\jobs.html" />
+    <EmbeddedResource Include="index.html" />
   </ItemGroup>
 
   <ItemGroup>

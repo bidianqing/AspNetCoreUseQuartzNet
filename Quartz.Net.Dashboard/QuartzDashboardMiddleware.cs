@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Quartz.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +9,26 @@ using System.Net.Mime;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static Quartz.SchedulerBuilder;
 
 namespace Quartz.Net.Dashboard
 {
     public class QuartzDashboardMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IScheduler _scheduler;
+        private readonly ISchedulerFactory _schedulerFactory;
+        private readonly IDbConnectionManager _dbConnectionManager;
 
-        public QuartzDashboardMiddleware(RequestDelegate next, IScheduler scheduler)
+        public QuartzDashboardMiddleware(RequestDelegate next, ISchedulerFactory schedulerFactory, IDbConnectionManager dbConnectionManager)
         {
             _next = next;
-            _scheduler = scheduler;
+            _schedulerFactory = schedulerFactory;
+            _dbConnectionManager = dbConnectionManager;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
+            var connection = _dbConnectionManager.GetConnection(AdoProviderOptions.DefaultDataSourceName);
             if (context.Request.Path.StartsWithSegments("/quartz-dashboard", StringComparison.OrdinalIgnoreCase))
             {
                 // 页面路由读取对应html源文件
@@ -34,6 +39,8 @@ namespace Quartz.Net.Dashboard
                     {
                         context.Response.ContentType = MediaTypeNames.Text.Html;
                         await inputStream.CopyToAsync(context.Response.Body).ConfigureAwait(false);
+
+                        await new JobListCommand(_schedulerFactory).ExecuteAsync();
                     }
                 }
 
@@ -47,9 +54,9 @@ namespace Quartz.Net.Dashboard
     public static class QuartzDashboardMiddlewareExtensions
     {
         public static IApplicationBuilder UseQuartzDashboard(
-            this IApplicationBuilder builder)
+            this IApplicationBuilder builder, ISchedulerFactory schedulerFactory)
         {
-            return builder.UseMiddleware<QuartzDashboardMiddleware>();
+            return builder.UseMiddleware<QuartzDashboardMiddleware>(schedulerFactory);
         }
     }
 }
