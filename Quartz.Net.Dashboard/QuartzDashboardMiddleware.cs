@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Quartz.Net.Dashboard.Commands;
 using Quartz.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using static Quartz.SchedulerBuilder;
 
 namespace Quartz.Net.Dashboard
