@@ -33,7 +33,7 @@ namespace Quartz.Net.Dashboard
             {
                 // 页面路由读取对应html源文件
                 // 接口路由执行对应的命令
-                using (var inputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Quartz.Net.Dashboard.Pages.jobs.html"))
+                using (var inputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Quartz.Net.Dashboard.index.html"))
                 {
                     if (inputStream != null)
                     {
