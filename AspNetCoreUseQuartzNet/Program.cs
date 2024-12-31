@@ -52,6 +52,10 @@ builder.Services.AddQuartz(options =>
         {
             mysql.ConnectionString = "server=127.0.0.1;port=3306;database=quartz;user id=root;password=root;CharacterSet=utf8mb4;SslMode=None;Allow User Variables=true;";
         });
+        s.UseSqlServer(sqlserver =>
+        {
+            sqlserver.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Quartz;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        });
         s.UseNewtonsoftJsonSerializer();
     });
 });
