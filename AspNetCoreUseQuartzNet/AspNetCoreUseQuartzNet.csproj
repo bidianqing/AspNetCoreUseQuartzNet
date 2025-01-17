@@ -16,8 +16,4 @@
     <PackageReference Include="Quartz.Serialization.Json" Version="3.13.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Quartz.Net.Dashboard\Quartz.Net.Dashboard.csproj" />
-  </ItemGroup>
-
 </Project>
