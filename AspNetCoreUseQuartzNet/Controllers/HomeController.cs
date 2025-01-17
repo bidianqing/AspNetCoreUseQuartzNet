@@ -1,11 +1,7 @@
 using AspNetCoreUseQuartzNet.Jobs;
-using CrystalQuartz.Core.Domain.Activities;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using Quartz.Impl.Matchers;
-using Quartz.Simpl;
-using Quartz.Util;
-using System.Collections.ObjectModel;
 
 namespace AspNetCoreUseQuartzNet.Controllers
 {
@@ -36,8 +32,8 @@ namespace AspNetCoreUseQuartzNet.Controllers
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
                         .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
-                        .WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
-                        //.WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
+                        //.WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
+                        .WithSimpleSchedule(x => x.WithIntervalInSeconds(10).RepeatForever())
                         //.WithCronSchedule("0 0/5 * * * ?")
                         .Build();
             //*/

@@ -19,18 +19,63 @@ namespace AspNetCoreUseQuartzNet.Tables
         [JsonPropertyName("JOB_GROUP")]
         public string JOB_GROUP { get; set; }
 
+        [JsonPropertyName("DESCRIPTION")]
+        public string DESCRIPTION { get; set; }
+
+        [JsonPropertyName("PREV_FIRE_TIME")]
+        public long PREV_FIRE_TIME { get; set; }
+
+        public DateTime PrevFireTime
+        {
+            get
+            {
+                return new DateTimeOffset(this.PREV_FIRE_TIME, TimeSpan.Zero).LocalDateTime;
+            }
+        }
+
+        [JsonPropertyName("NEXT_FIRE_TIME")]
+        public long NEXT_FIRE_TIME { get; set; }
+
+        public DateTime NextFireTime
+        {
+            get
+            {
+                return new DateTimeOffset(this.NEXT_FIRE_TIME, TimeSpan.Zero).LocalDateTime;
+            }
+        }
+
+
+
         [JsonPropertyName("TRIGGER_STATE")]
         public string TRIGGER_STATE { get; set; }
+
+        [JsonPropertyName("TRIGGER_TYPE")]
+        public string TRIGGER_TYPE { get; set; }
 
         [JsonPropertyName("START_TIME")]
         public long START_TIME { get; set; }
 
-        public DateTimeOffset StartTime
+        public DateTime StartTime
         {
             get
             {
-                return new DateTimeOffset(this.START_TIME, TimeSpan.Zero).ToLocalTime();
+                return new DateTimeOffset(this.START_TIME, TimeSpan.Zero).LocalDateTime;
             }
         }
+
+        [JsonPropertyName("END_TIME")]
+        public long? END_TIME { get; set; }
+
+        public DateTime? EndTime
+        {
+            get
+            {
+                if (this.END_TIME == null) return null;
+                return new DateTimeOffset(this.END_TIME.Value, TimeSpan.Zero).LocalDateTime;
+            }
+        }
+
+        [JsonPropertyName("MISFIRE_INSTR")]
+        public int MISFIRE_INSTR { get; set; }
     }
 }
