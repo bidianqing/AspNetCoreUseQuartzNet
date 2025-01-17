@@ -1,14 +1,7 @@
-using AspNetCoreUseQuartzNet;
-using AspNetCoreUseQuartzNet.Jobs;
-using CrystalQuartz.Application;
-using CrystalQuartz.AspNetCore;
 using Quartz;
 using Quartz.AspNetCore;
-using System;
 using System.ComponentModel;
 using System.Reflection;
-using System.Text;
-using Quartz.Net.Dashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,10 +54,6 @@ builder.Services.AddQuartzServer();
 var app = builder.Build();
 
 //app.UseQuartzUIAuthentication();
-
-//var scheduler = await app.Services.GetRequiredService<ISchedulerFactory>().GetScheduler();
-//app.UseCrystalQuartz(() => scheduler, new CrystalQuartzOptions { });
-//app.UseQuartzDashboard(app.Services.GetRequiredService<ISchedulerFactory>());
 
 app.MapControllers();
 
