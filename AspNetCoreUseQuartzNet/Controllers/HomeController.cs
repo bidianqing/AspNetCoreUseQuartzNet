@@ -36,9 +36,9 @@ namespace AspNetCoreUseQuartzNet.Controllers
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
                         .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
-                        //.WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
+                        .WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
                         //.WithSimpleSchedule(x => x.WithIntervalInMinutes(1).RepeatForever())
-                        .WithCronSchedule("0 0/5 * * * ?")
+                        //.WithCronSchedule("0 0/5 * * * ?")
                         .Build();
             //*/
 
