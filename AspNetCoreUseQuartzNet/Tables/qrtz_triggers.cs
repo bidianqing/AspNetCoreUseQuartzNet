@@ -77,5 +77,26 @@ namespace AspNetCoreUseQuartzNet.Tables
 
         [JsonPropertyName("MISFIRE_INSTR")]
         public int MISFIRE_INSTR { get; set; }
+
+        [JsonPropertyName("REPEAT_INTERVAL")]
+        public long REPEAT_INTERVAL { get; set; }
+
+        [JsonPropertyName("CRON_EXPRESSION")]
+        public string CRON_EXPRESSION { get; set; }
+
+        [JsonPropertyName("STR_PROP_1")]
+        public string STR_PROP_1 { get; set; }
+
+        [JsonPropertyName("INT_PROP_1")]
+        public int INT_PROP_1 { get; set; }
+
+        [JsonPropertyName("CALENDAR_INTERVAL")]
+        public string CALENDAR_INTERVAL
+        {
+            get
+            {
+                return $"{this.INT_PROP_1}{this.STR_PROP_1}";
+            }
+        }
     }
 }

@@ -26,20 +26,20 @@ namespace AspNetCoreUseQuartzNet.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get([FromQuery] string name)
         {
-            // Ö¸¶¨Ê±¼äÖ´ĞĞµÚÒ»´Î£¬È»ºóÃ¿¸ô1·ÖÖÓÖ´ĞĞÒ»´Î
+            // æŒ‡å®šæ—¶é—´æ‰§è¡Œç¬¬ä¸€æ¬¡ï¼Œç„¶åæ¯éš”1åˆ†é’Ÿæ‰§è¡Œä¸€æ¬¡
 
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
                         .UsingJobData("name", name)
                         .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
-                        //.WithCalendarIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second).WithMisfireHandlingInstructionDoNothing())
-                        .WithSimpleSchedule(x => x.WithIntervalInSeconds(10).RepeatForever())
+                        .WithCalendarIntervalSchedule(x => x.WithIntervalInWeeks(10))
+                        //.WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
                         //.WithCronSchedule("0 0/5 * * * ?")
                         .Build();
             //*/
 
 
-            // Ö¸¶¨Ê±¼äÖ´ĞĞµÚÒ»´Î£¬È»ºóÃ¿¸ô2Ğ¡Ê±Ö´ĞĞÒ»´Î
+            // æŒ‡å®šæ—¶é—´æ‰§è¡Œç¬¬ä¸€æ¬¡ï¼Œç„¶åæ¯éš”2å°æ—¶æ‰§è¡Œä¸€æ¬¡
             /*
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
@@ -50,7 +50,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
             //*/
 
 
-            // Ö¸¶¨Ê±¼äÖ´ĞĞµÚÒ»´Î£¬È»ºóÃ¿¸ô2ÌìÖ´ĞĞÒ»´Î
+            // æŒ‡å®šæ—¶é—´æ‰§è¡Œç¬¬ä¸€æ¬¡ï¼Œç„¶åæ¯éš”2å¤©æ‰§è¡Œä¸€æ¬¡
             /*
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
@@ -61,7 +61,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
             //*/
 
 
-            // Ö¸¶¨Ê±¼äÖ´ĞĞµÚÒ»´Î£¬È»ºóÃ¿¸ô2ÖÜÖ´ĞĞÒ»´Î
+            // æŒ‡å®šæ—¶é—´æ‰§è¡Œç¬¬ä¸€æ¬¡ï¼Œç„¶åæ¯éš”2å‘¨æ‰§è¡Œä¸€æ¬¡
             /*
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
@@ -72,7 +72,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
             //*/
 
 
-            // Ö¸¶¨Ê±¼äÖ´ĞĞµÚÒ»´Î£¬È»ºóÃ¿¸ô2ÔÂÖ´ĞĞÒ»´Î
+            // æŒ‡å®šæ—¶é—´æ‰§è¡Œç¬¬ä¸€æ¬¡ï¼Œç„¶åæ¯éš”2æœˆæ‰§è¡Œä¸€æ¬¡
             /*
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
@@ -95,7 +95,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// ÔİÍ£Ä³¸ö´¥·¢Æ÷
+        /// æš‚åœæŸä¸ªè§¦å‘å™¨
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -108,7 +108,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// »Ö¸´Ä³¸ö´¥·¢Æ÷
+        /// æ¢å¤æŸä¸ªè§¦å‘å™¨
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -121,7 +121,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// Ğ¶ÔØÄ³¸ö´¥·¢Æ÷
+        /// å¸è½½æŸä¸ªè§¦å‘å™¨
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -134,7 +134,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞ´¥·¢Æ÷
+        /// è·å–æ‰€æœ‰è§¦å‘å™¨
         /// </summary>
         /// <returns></returns>
         [HttpGet("AllTrigger")]
@@ -148,7 +148,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// É¾³ıËùÓĞ´¥·¢Æ÷
+        /// åˆ é™¤æ‰€æœ‰è§¦å‘å™¨
         /// </summary>
         /// <returns></returns>
         [HttpGet("DeleteAllTrigger")]
@@ -163,11 +163,11 @@ namespace AspNetCoreUseQuartzNet.Controllers
                 await scheduler.UnscheduleJob(new TriggerKey(trigger.Name, trigger.Group));
             }
 
-            return "²Ù×÷³É¹¦";
+            return "æ“ä½œæˆåŠŸ";
         }
 
         /// <summary>
-        /// Á¢¼´Ö´ĞĞÒ»¸öJob
+        /// ç«‹å³æ‰§è¡Œä¸€ä¸ªJob
         /// </summary>
         /// <returns></returns>
         [HttpGet("TriggerJob")]
@@ -181,7 +181,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         /// <summary>
-        /// »ñÈ¡´¥·¢Æ÷µÄÏÂ´ÎÖ´ĞĞÊ±¼ä
+        /// è·å–è§¦å‘å™¨çš„ä¸‹æ¬¡æ‰§è¡Œæ—¶é—´
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetNextFireTimeUtc")]
