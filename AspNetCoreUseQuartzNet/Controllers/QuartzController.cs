@@ -67,7 +67,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("triggers")]
-        public async Task<IEnumerable<qrtz_triggers>> GetTriggers([FromQuery] string jobName, [FromQuery] string jobGroup, [FromQuery] string triggerName)
+        public async Task<object> GetTriggers([FromQuery] string jobName, [FromQuery] string jobGroup, [FromQuery] string triggerName, [FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
             StringBuilder where = new StringBuilder(" 1 = 1 ");
             DynamicParameters parameters = new DynamicParameters();
@@ -89,14 +89,29 @@ namespace AspNetCoreUseQuartzNet.Controllers
                 parameters.Add("JOBGROUP", jobGroup);
             }
 
-            string sql = @$"select t1.*,t2.REPEAT_INTERVAL,t3.CRON_EXPRESSION,t4.STR_PROP_1,t4.INT_PROP_1
+            string listSql = @$"select t1.*,t2.REPEAT_INTERVAL,t3.CRON_EXPRESSION,t4.STR_PROP_1,t4.INT_PROP_1
+from qrtz_triggers t1
+left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2. TRIGGER_NAME
+left join qrtz_cron_triggers t3 on t1.TRIGGER_NAME = t3.TRIGGER_NAME
+left join qrtz_simprop_triggers t4 on t1.TRIGGER_NAME = t4.TRIGGER_NAME
+where {where}
+limit {(pageIndex - 1) * pageSize},{pageSize}";
+            string countSql = @$"select count(1) 
 from qrtz_triggers t1
 left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2. TRIGGER_NAME
 left join qrtz_cron_triggers t3 on t1.TRIGGER_NAME = t3.TRIGGER_NAME
 left join qrtz_simprop_triggers t4 on t1.TRIGGER_NAME = t4.TRIGGER_NAME
 where {where}";
             var connection = _connectionManager.GetConnection(AdoProviderOptions.DefaultDataSourceName);
-            return await connection.QueryAsync<qrtz_triggers>(sql, parameters);
+            var reader = await connection.QueryMultipleAsync($"{listSql};{countSql}", parameters);
+            var triggers = await reader.ReadAsync<qrtz_triggers>();
+            var total = await reader.ReadSingleAsync<int>();
+
+            return new
+            {
+                list = triggers,
+                total = total
+            };
         }
 
         /// <summary>
