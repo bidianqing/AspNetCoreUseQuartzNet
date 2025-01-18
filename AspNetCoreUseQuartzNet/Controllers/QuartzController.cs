@@ -91,14 +91,14 @@ namespace AspNetCoreUseQuartzNet.Controllers
 
             string listSql = @$"select t1.*,t2.REPEAT_INTERVAL,t3.CRON_EXPRESSION,t4.STR_PROP_1,t4.INT_PROP_1
 from qrtz_triggers t1
-left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2. TRIGGER_NAME
+left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2.TRIGGER_NAME
 left join qrtz_cron_triggers t3 on t1.TRIGGER_NAME = t3.TRIGGER_NAME
 left join qrtz_simprop_triggers t4 on t1.TRIGGER_NAME = t4.TRIGGER_NAME
 where {where}
 limit {(pageIndex - 1) * pageSize},{pageSize}";
             string countSql = @$"select count(1) 
 from qrtz_triggers t1
-left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2. TRIGGER_NAME
+left join qrtz_simple_triggers t2 on t1.TRIGGER_NAME = t2.TRIGGER_NAME
 left join qrtz_cron_triggers t3 on t1.TRIGGER_NAME = t3.TRIGGER_NAME
 left join qrtz_simprop_triggers t4 on t1.TRIGGER_NAME = t4.TRIGGER_NAME
 where {where}";
