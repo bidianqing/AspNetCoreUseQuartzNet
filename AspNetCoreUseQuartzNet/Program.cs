@@ -48,9 +48,10 @@ builder.Services.AddQuartz(options =>
         s.UseProperties = true;
         s.UseMySqlConnector(mysql =>
         {
-            mysql.ConnectionString = "server=127.0.0.1;port=3306;database=quartz;user id=root;password=root;CharacterSet=utf8mb4;SslMode=None;Allow User Variables=true;";
+            mysql.ConnectionString = "server=127.0.0.1;port=3306;database=quartz;user id=root;password=root;CharacterSet=utf8mb4;SslMode=None;Allow User Variables=true;AllowPublicKeyRetrieval=True";
         });
-        s.UseNewtonsoftJsonSerializer();
+        //s.UseNewtonsoftJsonSerializer();
+        s.UseSystemTextJsonSerializer();
     });
 });
 

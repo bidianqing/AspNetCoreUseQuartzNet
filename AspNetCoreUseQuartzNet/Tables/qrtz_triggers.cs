@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Quartz.Simpl;
+using System.Text.Json.Serialization;
 
 namespace AspNetCoreUseQuartzNet.Tables
 {
@@ -96,6 +97,28 @@ namespace AspNetCoreUseQuartzNet.Tables
             get
             {
                 return $"{this.INT_PROP_1}{this.STR_PROP_1}";
+            }
+        }
+
+        [JsonPropertyName("JOB_DATA")]
+        public byte[] JOB_DATA { get; set; }
+
+        public Dictionary<string, object> JobData
+        {
+            get
+            {
+                try
+                {
+                    var serializer = new SystemTextJsonObjectSerializer();
+                    serializer.Initialize();
+                    return serializer.DeSerialize<Dictionary<string, object>>(this.JOB_DATA);
+                }
+                catch
+                {
+                    
+                }
+
+                return null;
             }
         }
     }
