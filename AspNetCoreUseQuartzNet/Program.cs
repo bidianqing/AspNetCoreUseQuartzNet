@@ -57,6 +57,8 @@ builder.Services.AddQuartz(options =>
 
 builder.Services.AddQuartzServer();
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 //app.UseQuartzUIAuthentication();
