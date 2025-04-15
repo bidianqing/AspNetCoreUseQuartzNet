@@ -24,16 +24,16 @@ namespace AspNetCoreUseQuartzNet.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<WeatherForecast>> Get([FromQuery] string name)
+        public async Task<IEnumerable<WeatherForecast>> Get()
         {
             // 指定时间执行第一次，然后每隔1分钟执行一次
 
             ITrigger trigger = TriggerBuilder.Create()
                         .ForJob(HelloJob.Key)
-                        .UsingJobData("name", name)
+                        .UsingJobData("name", "tom")
                         .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
-                        .WithCalendarIntervalSchedule(x => x.WithIntervalInWeeks(10))
-                        //.WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
+                        //.WithCalendarIntervalSchedule(x => x.WithIntervalInWeeks(10))
+                        .WithSimpleSchedule(x => x.WithIntervalInSeconds(30).RepeatForever())
                         //.WithCronSchedule("0 0/5 * * * ?")
                         .Build();
             //*/
