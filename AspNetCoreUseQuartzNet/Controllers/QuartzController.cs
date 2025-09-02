@@ -26,20 +26,20 @@ namespace AspNetCoreUseQuartzNet.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("jobs")]
-        public async Task<IEnumerable<qrtz_job_details>> GetJobs([FromQuery] string jobName, [FromQuery] string jobGroup)
+        public async Task<IEnumerable<qrtz_job_details>> GetJobs([FromQuery] string JOB_NAME, [FromQuery] string JOB_GROUP)
         {
             StringBuilder where = new StringBuilder(" 1 = 1 ");
             DynamicParameters parameters = new DynamicParameters();
-            if (!string.IsNullOrEmpty(jobName))
+            if (!string.IsNullOrEmpty(JOB_NAME))
             {
                 where.Append($" and JOB_NAME = @JOBNAME");
-                parameters.Add("JOBNAME", jobName);
+                parameters.Add("JOBNAME", JOB_NAME);
             }
 
-            if (!string.IsNullOrEmpty(jobGroup))
+            if (!string.IsNullOrEmpty(JOB_GROUP))
             {
                 where.Append($" and JOB_GROUP = @JOBGROUP");
-                parameters.Add("JOBGROUP", jobGroup);
+                parameters.Add("JOBGROUP", JOB_GROUP);
             }
             var connection = _connectionManager.GetConnection(AdoProviderOptions.DefaultDataSourceName);
             return await connection.QueryAsync<qrtz_job_details>($"select * from qrtz_job_details where {where}", parameters);
@@ -59,7 +59,9 @@ namespace AspNetCoreUseQuartzNet.Controllers
 
             obj["variables"].AsArray().ToList().ForEach(u => data.Put(u["variableName"].ToString(), u["variableValue"].ToString()));
 
-            await scheduler.TriggerJob(new JobKey(obj["jobName"].ToString(), obj["jobGroup"].ToString()), data);
+            var jobKey = new JobKey(obj["JOB_NAME"].ToString(), obj["JOB_GROUP"].ToString());
+
+            await scheduler.TriggerJob(jobKey, data);
         }
 
         /// <summary>
