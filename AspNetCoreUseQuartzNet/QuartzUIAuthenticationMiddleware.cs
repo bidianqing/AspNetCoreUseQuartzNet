@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Globalization;
-using System.Net.Http.Headers;
-using System.Net.Http;
+﻿using System.Net.Http.Headers;
 using System.Text;
 
 namespace AspNetCoreUseQuartzNet
