@@ -1,4 +1,5 @@
-﻿using AspNetCoreUseQuartzNet.Tables;
+﻿using AspNetCoreUseQuartzNet.Jobs;
+using AspNetCoreUseQuartzNet.Tables;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
@@ -143,6 +144,25 @@ where {where}";
             {
                 await scheduler.UnscheduleJob(triggerKey);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("scheduleJob")]
+        public async Task ScheduleJob()
+        {
+            ITrigger trigger = TriggerBuilder.Create()
+                        .ForJob(HttpJob.Key)
+                        .UsingJobData("Method", "get")
+                        .UsingJobData("Url", "https://www.cnblogs.com/")
+                        .WithDescription("每五分钟请求一次博客园首页")
+                        .WithCronSchedule("0 0/5 * * * ?")
+                        .Build();
+
+            var scheduler = await _schedulerFactory.GetScheduler();
+            await scheduler.ScheduleJob(trigger);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Quartz;
 using System.ComponentModel;
 using System.Net.Http.Headers;
-using System.Net.Mime;
 using System.Text;
 
 namespace AspNetCoreUseQuartzNet.Jobs
