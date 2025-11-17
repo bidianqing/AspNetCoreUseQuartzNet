@@ -136,11 +136,11 @@ where {where}";
             {
                 await scheduler.PauseTrigger(triggerKey);
             }
-            else if(command == "resume")
+            else if (command == "resume")
             {
                 await scheduler.ResumeTrigger(triggerKey);
             }
-            else if(command == "unschedule")
+            else if (command == "unschedule")
             {
                 await scheduler.UnscheduleJob(triggerKey);
             }
@@ -154,12 +154,15 @@ where {where}";
         public async Task ScheduleJob()
         {
             ITrigger trigger = TriggerBuilder.Create()
-                        .ForJob(HttpJob.Key)
-                        .UsingJobData("Method", "get")
-                        .UsingJobData("Url", "https://www.cnblogs.com/")
-                        .WithDescription("每五分钟请求一次博客园首页")
-                        .WithCronSchedule("0 0/5 * * * ?")
-                        .Build();
+                .ForJob(HttpJob.Key)
+                .UsingJobData("Method", "get")
+                .UsingJobData("Url", "https://www.cnblogs.com/")
+                .WithDescription("每五分钟请求一次博客园首页")
+                .WithCronSchedule("0 0/5 * * * ?", builder =>
+                {
+                    builder.WithMisfireHandlingInstructionDoNothing();
+                })
+                .Build();
 
             var scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.ScheduleJob(trigger);
