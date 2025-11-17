@@ -40,6 +40,7 @@ builder.Services.AddQuartz(options =>
             c.WithDescription(description);
             c.WithIdentity(jobKey);
             c.StoreDurably();
+            c.DisallowConcurrentExecution();
         });
     }
 
@@ -56,7 +57,7 @@ builder.Services.AddQuartz(options =>
 
 builder.Services.AddQuartzServer();
 
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("default");
 
 var app = builder.Build();
 

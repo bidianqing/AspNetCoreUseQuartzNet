@@ -7,6 +7,8 @@ using System.Text;
 namespace AspNetCoreUseQuartzNet.Jobs
 {
     [Description("HttpJob")]
+    //[PersistJobDataAfterExecution]
+    //[DisallowConcurrentExecution]
     public class HttpJob : IJob
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -20,21 +22,19 @@ namespace AspNetCoreUseQuartzNet.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            context.MergedJobDataMap.TryGetString("method", out string httpMethod);
-            context.MergedJobDataMap.TryGetString("url", out string requestUri);
-            context.MergedJobDataMap.TryGetString("body", out string content);
+            context.MergedJobDataMap.TryGetString("Method", out string method);
+            context.MergedJobDataMap.TryGetString("Url", out string url);
+            context.MergedJobDataMap.TryGetString("BasicUserName", out string basicUserName);
+            context.MergedJobDataMap.TryGetString("BasicPassword", out string basicPassword);
+
 
             var client = _httpClientFactory.CreateClient();
-            var request = new HttpRequestMessage(new HttpMethod(httpMethod), requestUri);
-            if (!string.IsNullOrWhiteSpace(content))
-            {
-                request.Content = new StringContent(content, Encoding.UTF8, MediaTypeNames.Application.Json);
-            }
+            var request = new HttpRequestMessage(new HttpMethod(method), url);
 
-            var headers = Array.Empty<NameValueHeaderValue>();
-            foreach (var item in headers)
+            if (!string.IsNullOrWhiteSpace(basicUserName) && !string.IsNullOrWhiteSpace(basicPassword))
             {
-                request.Headers.Add(item.Name, item.Value);
+                string parameter = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{basicUserName}:{basicPassword}"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", parameter);
             }
 
             await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);

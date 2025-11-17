@@ -34,6 +34,7 @@ namespace AspNetCoreUseQuartzNet.Controllers
                         .StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(3)))
                         //.WithCalendarIntervalSchedule(x => x.WithIntervalInWeeks(10))
                         .WithSimpleSchedule(x => x.WithIntervalInSeconds(30).RepeatForever())
+                        .WithDescription("")
                         //.WithCronSchedule("0 0/5 * * * ?")
                         .Build();
             //*/
