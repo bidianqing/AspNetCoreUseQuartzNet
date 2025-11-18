@@ -147,25 +147,55 @@ where {where}";
         }
 
         /// <summary>
-        /// 
+        /// 创建或更新一个HttpJob的触发器
         /// </summary>
         /// <returns></returns>
-        [HttpGet("scheduleJob")]
-        public async Task ScheduleJob()
+        [HttpPost("scheduleJob")]
+        public async Task ScheduleJob([FromBody] JsonObject obj)
         {
-            ITrigger trigger = TriggerBuilder.Create()
-                .ForJob(HttpJob.Key)
-                .UsingJobData("Method", "get")
-                .UsingJobData("Url", "https://www.cnblogs.com/")
-                .WithDescription("每五分钟请求一次博客园首页")
-                .WithCronSchedule("0 0/5 * * * ?", builder =>
-                {
-                    builder.WithMisfireHandlingInstructionDoNothing();
-                })
-                .Build();
+            var triggerName = obj["triggerName"]?.ToString();
+            var triggerGroup = obj["triggerGroup"]?.ToString();
+            var cron = obj["cron"]?.ToString();
+            var description = obj["description"]?.ToString();
+
+            var newJobDataMap = new JobDataMap();
+            obj["variables"].AsArray().ToList().ForEach(u => newJobDataMap.Put(u["variableName"].ToString(), u["variableValue"].ToString()));
+
 
             var scheduler = await _schedulerFactory.GetScheduler();
-            await scheduler.ScheduleJob(trigger);
+
+            if (string.IsNullOrWhiteSpace(triggerName) && string.IsNullOrWhiteSpace(triggerGroup))
+            {
+                // 新建触发器
+                ITrigger trigger = TriggerBuilder.Create()
+                    .ForJob(HttpJob.Key)
+                    .UsingJobData(newJobDataMap)
+                    .WithDescription(description)
+                    .WithCronSchedule(cron, builder =>
+                    {
+                        builder.WithMisfireHandlingInstructionDoNothing();
+                    })
+                    .Build();
+                
+                await scheduler.ScheduleJob(trigger);
+            }
+            else
+            {
+                // 基于原触发器修改
+                ITrigger newTrigger = TriggerBuilder.Create()
+                    .ForJob(HttpJob.Key)
+                    .WithIdentity(triggerName, triggerGroup)
+                    .UsingJobData(newJobDataMap)
+                    .WithDescription(description)
+                    .WithCronSchedule(cron, builder =>
+                    {
+                        builder.WithMisfireHandlingInstructionDoNothing();
+                    })
+                    .Build();
+        
+                await scheduler.RescheduleJob(new TriggerKey(triggerName, triggerGroup), newTrigger);
+            }
+
         }
     }
 }
