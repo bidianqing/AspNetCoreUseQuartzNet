@@ -151,7 +151,7 @@ where {where}";
         /// </summary>
         /// <returns></returns>
         [HttpPost("scheduleJob")]
-        public async Task ScheduleJob([FromBody] JsonObject obj)
+        public async Task<ResultModel<object>> ScheduleJob([FromBody] JsonObject obj)
         {
             var triggerName = obj["triggerName"]?.ToString();
             var triggerGroup = obj["triggerGroup"]?.ToString();
@@ -161,6 +161,11 @@ where {where}";
             var newJobDataMap = new JobDataMap();
             obj["variables"].AsArray().ToList().ForEach(u => newJobDataMap.Put(u["variableName"].ToString(), u["variableValue"].ToString()));
 
+            var isValid = Quartz.CronExpression.IsValidExpression(cron);
+            if (!isValid)
+            {
+                return ResultModel.Fail<object>(null, "cron表达式不正确");
+            }
 
             var scheduler = await _schedulerFactory.GetScheduler();
 
@@ -196,6 +201,7 @@ where {where}";
                 await scheduler.RescheduleJob(new TriggerKey(triggerName, triggerGroup), newTrigger);
             }
 
+            return ResultModel.Success<object>();
         }
     }
 }
